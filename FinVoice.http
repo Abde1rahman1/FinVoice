@@ -1,0 +1,6 @@
+@FinVoice_HostAddress = http://localhost:5166
+
+GET {{FinVoice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
