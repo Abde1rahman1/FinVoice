@@ -3,9 +3,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 namespace FinVoice.Authentication;
 
-public class JwtPorvicer : IJwtPorvicer
+
+public class JwtPorvicer(IConfiguration configuration) : IJwtPorvicer
 {
     public (string token, int expiresIn) GenerateToken(User user)
     {
@@ -16,15 +18,15 @@ public class JwtPorvicer : IJwtPorvicer
             new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             ];
 
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(""));
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
 
         var signingCredentials = new SigningCredentials (symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
         var expiresIn = 30;
 
         var token = new JwtSecurityToken(
-            issuer: "",
-            audience: "",
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(expiresIn*60),
             signingCredentials: signingCredentials

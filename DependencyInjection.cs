@@ -2,9 +2,12 @@
 using FinVoice.Database;
 using FinVoice.Entities;
 using FinVoice.Services.Auth;
+using FinVoice.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -36,9 +39,10 @@ public static class DependencyInjection
             options.UseSqlServer(connectionString));
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IEmailSender, EmailService>();
         services.AddProblemDetails();
         services.AddHttpContextAccessor();
-
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
        
 
         return services;
@@ -49,7 +53,8 @@ public static class DependencyInjection
     {
         services.AddSingleton<IJwtPorvicer, JwtPorvicer>();
         services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
         services.AddAuthentication(options =>
         {
@@ -70,6 +75,14 @@ public static class DependencyInjection
                     ValidAudience = configuration["Jwt:Audience"]
                 };
             });
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        });
+
 
         return services;
     }
