@@ -2,6 +2,7 @@
 using FinVoice.Database;
 using FinVoice.Entities;
 using FinVoice.Services.Auth;
+using FinVoice.Services.ExpenseService;
 using FinVoice.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace FinVoice;
@@ -40,11 +42,12 @@ public static class DependencyInjection
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IEmailSender, EmailService>();
+        services.AddScoped<IVoiceAnalysisService, VoiceAnalysisService>();
+        //services.AddHttpClient<IVoiceAnalysisService, VoiceAnalysisService>();
+        services.AddHttpClient<VoiceAnalysisService>();
         services.AddProblemDetails();
         services.AddHttpContextAccessor();
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
-       
-
         return services;
     }
 

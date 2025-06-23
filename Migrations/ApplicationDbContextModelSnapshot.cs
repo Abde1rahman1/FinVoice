@@ -65,11 +65,6 @@ namespace FinVoice.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("AudioFileUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasMaxLength(50)

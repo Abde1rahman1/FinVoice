@@ -27,7 +27,5 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
         builder.Property(e => e.SourceText)
             .HasMaxLength(500);
 
-        builder.Property(e => e.AudioFileUrl)
-            .HasMaxLength(500);
     }
 }

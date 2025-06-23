@@ -1,5 +1,31 @@
 [
   {
+    "ContainingType": "FinVoice.Controllers.AudioExpensesController",
+    "Method": "AnalyzeAudio",
+    "RelativePath": "api/AudioExpenses/analyze",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Audio",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FinVoice.Controllers.AudioExpensesController",
+    "Method": "GetAllVoiceAnalysis",
+    "RelativePath": "api/AudioExpenses/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FinVoice.Controllers.AuthController",
     "Method": "ConfirmEmail",
     "RelativePath": "api/Auth/confirm-email",

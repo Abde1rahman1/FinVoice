@@ -3,21 +3,28 @@ using FinVoice.Abstractions.ResultPattern;
 using FinVoice.Authentication;
 using FinVoice.Contracts.Auth;
 using FinVoice.Entities;
+using FinVoice.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+
 
 namespace FinVoice.Services.Auth;
 
 public class AuthService(UserManager<User> userManager,
                         SignInManager<User> signInManager,
                         IJwtPorvicer jwtPorvicer,
-                        ILogger<AuthService> logger) : IAuthService
+                        ILogger<AuthService> logger,
+                        IEmailSender emailSender,
+                        IHttpContextAccessor httpContextAccessor) : IAuthService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly SignInManager<User> _signInManager = signInManager;
     private readonly IJwtPorvicer _jwtPorvicer = jwtPorvicer;
     private readonly ILogger<AuthService> _logger = logger;
+    private readonly IEmailSender _emailSender = emailSender;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
@@ -63,6 +70,7 @@ public class AuthService(UserManager<User> userManager,
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             _logger.LogInformation("Congirmation Code {code}", code);
+            await SendConfirmEmail(user, code);
             return Result.Success();
         }
         var error = result.Errors.First();
@@ -106,8 +114,20 @@ public class AuthService(UserManager<User> userManager,
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         _logger.LogInformation("Congirmation Code {code}", code);
-
+        await SendConfirmEmail(user, code);
         return Result.Success();
+    }
+
+    private async Task SendConfirmEmail(User user, string code)
+    {
+        var orign = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("ConfirmationEmail",
+        new Dictionary<string, string>
+                                        {
+            {"{{name}}",user.FullName },
+            {"{{action_url}}",$"{orign}/auth/emailConfirmation?userId={user.Id}&code={code}" }
+                                        });
+        await _emailSender.SendEmailAsync(user.Email!, "FinVoice: Email Confirmation", emailBody);
     }
 }
     

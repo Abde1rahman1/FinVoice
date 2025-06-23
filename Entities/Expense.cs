@@ -16,7 +16,5 @@ public class Expense
 
     public string SourceText { get; set; } 
 
-    public string AudioFileUrl { get; set; } 
-
     public User User { get; set; }
 }
