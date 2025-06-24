@@ -1,6 +1,6 @@
 ﻿namespace FinVoice.Contracts.ManualExpense;
 
-public class AudioUploadRequest
+public class AiExpenseRequest
 {
     public IFormFile Audio { get; set; }
 }

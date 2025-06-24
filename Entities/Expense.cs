@@ -14,7 +14,7 @@ public class Expense
 
     public string? Note { get; set; }
 
-    public string SourceText { get; set; } 
+    public string? SourceText { get; set; } 
 
     public User User { get; set; }
 }

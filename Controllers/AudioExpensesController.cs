@@ -20,7 +20,7 @@ public class AudioExpensesController : ControllerBase
 
     [HttpPost("analyze")]
     [Consumes("multipart/form-data")] 
-    public async Task<IActionResult> AnalyzeAudio([FromForm] AudioUploadRequest request)
+    public async Task<IActionResult> AnalyzeAudio([FromForm] AiExpenseRequest request)
     {
         if (request.Audio == null || request.Audio.Length == 0)
             return BadRequest("Audio file is required.");
