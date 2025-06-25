@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FinVoice")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+757b8a4ef7b40cfa846a8fa9d5e7202c8a43e69a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8d9eb27cb8b22d5ee107bd1d0decf541e995372")]
 [assembly: System.Reflection.AssemblyProductAttribute("FinVoice")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FinVoice")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,6 +1,8 @@
 using FinVoice;
 using FinVoice.Database;
 using FinVoice.Entities;
+using FinVoice.Services.Notification;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
 }
+app.UseHangfireDashboard("/jobs");
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using var scope = scopeFactory.CreateScope();
+var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+RecurringJob.AddOrUpdate("CheckAndNotifyOverBudgetUsers", () => notificationService.CheckAndNotifyOverBudgetUsersAsync(), Cron.Minutely);
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();

@@ -5,7 +5,9 @@ using FinVoice.Services.Analytics;
 using FinVoice.Services.Auth;
 using FinVoice.Services.BudgetService;
 using FinVoice.Services.ExpenseService;
+using FinVoice.Services.Notification;
 using FinVoice.Settings;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -48,8 +50,10 @@ public static class DependencyInjection
         services.AddScoped<IManualExpenseService, ManualExpenseService>();
         services.AddScoped<IBudgetService, BudgetService>();
         services.AddScoped<IAnalysisService, AnalysisService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddHttpClient<VoiceAnalysisService>();
         services.AddProblemDetails();
+        services.AddBackgroundJobsConfig(configuration);
         services.AddHttpContextAccessor();
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
         return services;
@@ -90,6 +94,17 @@ public static class DependencyInjection
             options.User.RequireUniqueEmail = true;
         });
 
+
+        return services;
+    }
+    private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+        services.AddHangfireServer();
 
         return services;
     }

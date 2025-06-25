@@ -4,6 +4,7 @@ using FinVoice.Authentication;
 using FinVoice.Contracts.Auth;
 using FinVoice.Entities;
 using FinVoice.Helpers;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
@@ -70,7 +71,7 @@ public class AuthService(UserManager<User> userManager,
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             _logger.LogInformation("Congirmation Code {code}", code);
-            await SendConfirmEmail(user, code);
+           BackgroundJob.Enqueue(()=> SendConfirmEmail(user, code));
             return Result.Success();
         }
         var error = result.Errors.First();
@@ -114,11 +115,11 @@ public class AuthService(UserManager<User> userManager,
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         _logger.LogInformation("Congirmation Code {code}", code);
-        await SendConfirmEmail(user, code);
+        BackgroundJob.Enqueue(() => SendConfirmEmail(user, code));
         return Result.Success();
     }
 
-    private async Task SendConfirmEmail(User user, string code)
+    public async Task SendConfirmEmail(User user, string code)
     {
         var orign = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
         var emailBody = EmailBodyBuilder.GenerateEmailBody("ConfirmationEmail",
