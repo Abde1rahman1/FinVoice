@@ -1,5 +1,15 @@
 [
   {
+    "ContainingType": "FinVoice.Controllers.AnalysisController",
+    "Method": "SpendingInsight",
+    "RelativePath": "api/Analysis/SpendingInsight",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FinVoice.Controllers.AudioExpensesController",
     "Method": "AnalyzeAudio",
     "RelativePath": "api/AudioExpenses/analyze",
@@ -150,6 +160,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FinVoice.Controllers.BudgetController",
+    "Method": "BudgetComparison",
+    "RelativePath": "api/Budget/BudgetComparison",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

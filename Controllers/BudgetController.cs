@@ -43,4 +43,11 @@ public class BudgetController(IBudgetService budgetService) : ControllerBase
         var result = await _budgetService.DeleteBudgetAsync(User.GetUserId()!, budgetId);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
+
+    [HttpGet("BudgetComparison")]
+    public async Task<IActionResult> BudgetComparison()
+    {
+        var result = await _budgetService.CompareTotalSpendingToBudgetAsync(User.GetUserId()!);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
 }

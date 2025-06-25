@@ -12,4 +12,6 @@ public interface IBudgetService
     Task<Result> UpdateBudgetAsync(AddBudgetRequest request, string userId, int budgetId);
 
     Task<Result> DeleteBudgetAsync(string userId, int budgetId);
+
+    Task<Result<BudgetComparisonResponse?>> CompareTotalSpendingToBudgetAsync(string userId);
 }

@@ -1,6 +1,7 @@
 ﻿using FinVoice.Authentication;
 using FinVoice.Database;
 using FinVoice.Entities;
+using FinVoice.Services.Analytics;
 using FinVoice.Services.Auth;
 using FinVoice.Services.BudgetService;
 using FinVoice.Services.ExpenseService;
@@ -46,7 +47,7 @@ public static class DependencyInjection
         services.AddScoped<IVoiceAnalysisService, VoiceAnalysisService>();
         services.AddScoped<IManualExpenseService, ManualExpenseService>();
         services.AddScoped<IBudgetService, BudgetService>();
-        //services.AddHttpClient<IVoiceAnalysisService, VoiceAnalysisService>();
+        services.AddScoped<IAnalysisService, AnalysisService>();
         services.AddHttpClient<VoiceAnalysisService>();
         services.AddProblemDetails();
         services.AddHttpContextAccessor();

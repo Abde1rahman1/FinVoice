@@ -74,4 +74,35 @@ public class BudgetService(ApplicationDbContext context) : IBudgetService
         _context.SaveChanges();
         return Result.Success();
     }
+
+    public async Task<Result<BudgetComparisonResponse?>> CompareTotalSpendingToBudgetAsync(string userId)
+    {
+        var budget = await _context.Budgets
+            .Where(b => b.UserId == userId)
+            .OrderByDescending(b => b.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (budget is null)
+            return Result.Failure<BudgetComparisonResponse?>(BudgetError.NoBudgets);
+
+        var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+        var totalSpent = await _context.Expenses
+            .Where(e => e.UserId == userId && e.Date >= startOfMonth)
+            .SumAsync(e => e.Amount);
+
+        var percentageUsed = budget.MonthlyLimit == 0
+            ? 0
+            : Math.Round(((double)totalSpent / (double)budget.MonthlyLimit) * 100, 2);
+
+        var isExceeded = totalSpent > budget.MonthlyLimit;
+
+        var result = new BudgetComparisonResponse(
+            budget.MonthlyLimit,
+            totalSpent,
+            percentageUsed,
+            isExceeded
+        );
+
+        return Result.Success(result)!;
+    }
 }
