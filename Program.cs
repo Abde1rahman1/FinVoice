@@ -24,10 +24,12 @@ if (app.Environment.IsDevelopment())
 
 }
 app.UseHangfireDashboard("/jobs");
+
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using var scope = scopeFactory.CreateScope();
 var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-RecurringJob.AddOrUpdate("CheckAndNotifyOverBudgetUsers", () => notificationService.CheckAndNotifyOverBudgetUsersAsync(), Cron.Minutely);
+RecurringJob.AddOrUpdate("CheckAndNotifyOverBudgetUsers", () => notificationService.CheckAndNotifyOverBudgetUsersAsync(), Cron.Daily);
+
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
